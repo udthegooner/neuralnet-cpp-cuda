@@ -39,3 +39,6 @@
 
 # debug information files
 *.dwo
+
+# MNIST binary dataset files
+*ubyte
