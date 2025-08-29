@@ -1,5 +1,6 @@
 #include "celoss.h"
 #include <cmath>
+#include <algorithm>
 
 const float epsilon = 1e-10;
 

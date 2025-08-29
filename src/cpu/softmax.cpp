@@ -1,6 +1,7 @@
 #include "softmax.h"
 #include <cmath>
-#include "../utils/utils.h"
+#include "utils.h"
+#include <vector>
 
 Softmax::Softmax(int _numVals){
     numOut = _numVals;
@@ -13,7 +14,7 @@ void Softmax::forward(float *_input, float *_output, int numData){
     // iterate over data points
     for (int i=0; i<numData; i++){
 
-        float exps[numOut];
+        std::vector<float> exps(numOut);
         float sumExp = 0.0f;
         float max = arrMax(input, i*numOut, (i+1)*numOut-1);
 

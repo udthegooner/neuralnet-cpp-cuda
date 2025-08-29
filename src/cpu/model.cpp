@@ -1,6 +1,6 @@
 #include "model.h"
 #include <iostream>
-#include "../utils/utils.h"
+#include "utils.h"
 using namespace std;
 
 Model::Model(Base** _layers, int _numLayers){

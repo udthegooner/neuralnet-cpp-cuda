@@ -1,6 +1,9 @@
 #include "layer.h"
-#include "../utils/utils.h"
+#include "utils.h"
 #include <iostream>
+#include <algorithm>
+#include <vector>
+
 Layer::Layer(int nIn, int nOut, float _lr){
     numIn = nIn; //number of input nodes
     numOut = nOut; //number of output nodes
@@ -47,8 +50,7 @@ void Layer::forward(float *_input, float *_output, int numData){
 
 void Layer::update(int numData){
     // calculate column sum of gradient
-    float sumGrad[numOut];
-    std::fill(sumGrad, sumGrad + numOut, 0.0f);
+    std::vector<float> sumGrad(numOut, 0.0f); // size = numOut, initialized to 0
     for (int i=0; i<numData; i++)
         for (int j=0; j<numOut; j++)
             sumGrad[j] += output[i*numOut+j];
