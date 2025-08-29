@@ -42,3 +42,6 @@
 
 # MNIST binary dataset files
 *ubyte
+
+# Build directory
+/build/
