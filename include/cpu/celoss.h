@@ -10,9 +10,6 @@ class CELoss: public Base{
         void forward(float *input, float *labels, int numData);
         void backward(int numData);
 
-        void forward(float *input, float *output);
-        void backward(); 
-        void update();
 };
 
 #endif

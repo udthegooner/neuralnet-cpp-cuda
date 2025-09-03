@@ -8,20 +8,18 @@ Model::Model(Base** _layers, int _numLayers){
     numLayers = _numLayers;
 }
 
-void Model::forward(float *input, float *output, int numData){
+float* Model::forward(float *input, int numData){
     float *currOut;
     int sizeOut, i;
 
     for (i=0; i<numLayers; i++){
         Base* layer = layers[i];
         sizeOut = layer->numOut;
-        currOut = new float[numData*sizeOut];
-        zeroes(currOut, numData*sizeOut);
-        layer->forward(input, currOut, numData);
+        currOut = layer->forward(input, numData);
 
         input = currOut;
     }
-    setEqual(currOut, output, numData*sizeOut);
+    return currOut;
 }
 
 void Model::update(int numData){

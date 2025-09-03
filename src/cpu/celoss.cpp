@@ -30,9 +30,3 @@ void CELoss::backward(int numData){
         input[i*numOut + label] -= 1.0f;
     }
 }
-
-void CELoss::forward(float* input, float* output) {}
-
-void CELoss::backward() {}
-
-void CELoss::update() {}

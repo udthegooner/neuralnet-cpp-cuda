@@ -19,9 +19,10 @@ Layer::Layer(int nIn, int nOut, float _lr){
     zeroes(bias, nOut);
 }
 
-void Layer::forward(float *_input, float *_output, int numData){
+float* Layer::forward(float *_input, int numData){
     input = _input;
-    output = _output;
+    output = new float[numData*numOut];
+    zeroes(output, numData*numOut);
     
     //iterate over each data point in input
     for (int i=0; i<numData; i++){
@@ -46,6 +47,7 @@ void Layer::forward(float *_input, float *_output, int numData){
             output[outIndex] += bias[p];
         }
     }
+    return output;
 }
 
 void Layer::update(int numData){
@@ -58,9 +60,10 @@ void Layer::update(int numData){
     // update bias
     for (int i=0; i<numOut; i++)
         bias[i] -= lr*sumGrad[i]/numData;
-
+            
     // calculate product of gradient and input data
     float* prodGrad = new float[weightSize];
+    std::fill(prodGrad, prodGrad + weightSize, 0.0f);
     for (int i=0; i<numData; i++){ //iterate over data
 
         for (int j=0; j<numIn; j++){ //iterate over input nodes
@@ -70,7 +73,7 @@ void Layer::update(int numData){
                 float gradTerm = output[i*numOut+k];
 
                 int index = j*numOut + k;
-                if (i==0) prodGrad[index] = 0.0f;
+                // if (i==0) prodGrad[index] = 0.0f;
                 prodGrad[index] += inputTerm*gradTerm;
             }
         }
@@ -81,7 +84,7 @@ void Layer::update(int numData){
     for (int i=0; i<numIn; i++){
         for (int j=0; j<numOut; j++){
             int index = i*numOut+j;
-            newWeights[index] = weights[index] - lr*prodGrad[index];
+            newWeights[index] = weights[index] - lr*(prodGrad[index] / float(numData));
         }
     }
     delete[] prodGrad;
@@ -108,8 +111,3 @@ void Layer::backward(int numData){
     weights = newWeights;
     delete[] output;
 }
-
-
-void Layer::forward(float *input, float *output) {}
-void Layer::backward() {}
-void Layer::update() {}

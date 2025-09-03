@@ -7,9 +7,9 @@ Softmax::Softmax(int _numVals){
     numOut = _numVals;
 }
 
-void Softmax::forward(float *_input, float *_output, int numData){
+float* Softmax::forward(float *_input, int numData){
     input = _input;
-    output = _output;
+    output = new float[numData*numOut];
     
     // iterate over data points
     for (int i=0; i<numData; i++){
@@ -29,6 +29,7 @@ void Softmax::forward(float *_input, float *_output, int numData){
             output[i*numOut+j] = exps[j]/sumExp;
         }
     }
+    return output;
 }
 
 void Softmax::backward(int numData){
@@ -38,9 +39,3 @@ void Softmax::backward(int numData){
     }
     delete[] output;
 }
-
-void Softmax::forward(float *input, float *output) {}
-
-void Softmax::backward() {}
-
-void Softmax::update() {}

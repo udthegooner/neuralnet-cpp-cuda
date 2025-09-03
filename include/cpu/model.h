@@ -9,7 +9,7 @@ class Model: public Base{
         int numLayers;
         
         Model(Base** _layers, int _numLayers);
-        void forward(float *input, float *output, int numData);
+        float* forward(float *input, int numData);
         void update(int numData);
 };
 

@@ -10,13 +10,10 @@ class Layer: public Base{
 
         Layer(int nIn, int nOut, float _lr);
 
-        void forward(float *input, float *output, int numData);
+        float* forward(float *input, int numData);
         void backward(int numData);
         void update(int numData);
 
-        void forward(float *input, float *output);
-        void backward();
-        void update();
 };
 
 #endif

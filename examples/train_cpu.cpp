@@ -31,60 +31,60 @@ std::pair<float*, float*> generateDummyData(int numSamples, int numFeatures) {
     return std::make_pair(X, y);
 }
 
-int dummy() {
-    int numSamples = 20;
-    int numFeatures = 5;
+// int dummy() {
+//     int numSamples = 20;
+//     int numFeatures = 5;
 
-    auto dum = generateDummyData(numSamples, numFeatures);
+//     auto dum = generateDummyData(numSamples, numFeatures);
 
-    float* data = dum.first;
-    float* labels = dum.second;
+//     float* data = dum.first;
+//     float* labels = dum.second;
 
-    // Displalabelsing generated data (for demonstration purposes)
-    std::cout << "Generated Data:" << std::endl;
-    for (int i = 0; i < numSamples; ++i) {
-        std::cout << "Sample " << i + 1 << ": ";
-        for (int j = 0; j < numFeatures; ++j) {
-            std::cout << data[i * numFeatures + j] << " ";
-        }
-        std::cout << " Label: " << labels[i] << std::endl;
-    }
+//     // Displalabelsing generated data (for demonstration purposes)
+//     std::cout << "Generated Data:" << std::endl;
+//     for (int i = 0; i < numSamples; ++i) {
+//         std::cout << "Sample " << i + 1 << ": ";
+//         for (int j = 0; j < numFeatures; ++j) {
+//             std::cout << data[i * numFeatures + j] << " ";
+//         }
+//         std::cout << " Label: " << labels[i] << std::endl;
+//     }
 
-    Base** layers = new Base*[6];
-    layers[0] = new Layer(5, 15, 0.001);
-    layers[1] = new ReLU(15);
-    layers[2] = new Layer(15, 10, 0.001);
-    layers[3] = new ReLU(10);
-    layers[4] = new Layer(10, 3, 0.001);
-    layers[5] = new Softmax(3);
-    Model model = Model(layers, 6);
-    CELoss* celoss = new CELoss(3);
+//     Base** layers = new Base*[6];
+//     layers[0] = new Layer(5, 15, 0.001);
+//     layers[1] = new ReLU(15);
+//     layers[2] = new Layer(15, 10, 0.001);
+//     layers[3] = new ReLU(10);
+//     layers[4] = new Layer(10, 3, 0.001);
+//     layers[5] = new Softmax(3);
+//     Model model = Model(layers, 6);
+//     CELoss* celoss = new CELoss(3);
     
-    int numEpochs = 20;
-    float* input = new float[numSamples*5];
-    float* output = new float[numSamples*3];
+//     int numEpochs = 20;
+//     float* input = new float[numSamples*5];
+//     float* output = new float[numSamples*3];
 
-    for (int i=0; i<numEpochs; i++){
-        cout << "epoch " << i << endl;
-        setEqual(data, input, numSamples*5);
+//     for (int i=0; i<numEpochs; i++){
+//         cout << "epoch " << i << endl;
+//         setEqual(data, input, numSamples*5);
         
-        model.forward(input, output, numSamples);
+//         model.forward(input, output, numSamples);
 
-        // calc error
-        celoss->forward(output, labels, numSamples);
-        float loss = celoss->loss;
-        cout << "epoch " << i << " loss: " << loss << endl;
+//         // calc error
+//         celoss->forward(output, labels, numSamples);
+//         float loss = celoss->loss;
+//         cout << "epoch " << i << " loss: " << loss << endl;
 
-        celoss->backward(numSamples);
-        model.update(numSamples);
-    }
+//         celoss->backward(numSamples);
+//         model.update(numSamples);
+//     }
 
-    delete[] layers;
-    delete[] data;
-    delete[] labels;
+//     delete[] layers;
+//     delete[] data;
+//     delete[] labels;
 
-    return 0;
-}
+//     return 0;
+// }
 
 float calcAccuracy(float* output, float* labels, int numData){
     int numCorrect = 0;
@@ -103,6 +103,7 @@ float calcAccuracy(float* output, float* labels, int numData){
             numCorrect++;
         }
     }
+    cout << "num correct: " << numCorrect << " out of " << numData << endl;
     return float(numCorrect)/float(numData);
 }
 
@@ -110,29 +111,26 @@ int main (int argc, char *argv[]){
     chrono::duration<double, std::milli> duration; //timer
 
     MNIST* mnist = new MNIST();
-    int numImages = 200;
+    int numImages = 20000;
     float* data = mnist->readData("train", numImages);
     float* labels = mnist->readLabels("train", numImages);
-    float lr = 5e-5;
+    float lr = 1e-2;
 
-    int numLayers = 8;
+    int numLayers = 6;
     Base** layers = new Base*[numLayers];
-    layers[0] = new Layer(784, 1024, lr);
-    layers[1] = new ReLU(1024);
-    layers[2] = new Layer(1024, 512, lr);
-    layers[3] = new ReLU(512);
-    layers[4] = new Layer(512, 256, lr);
-    layers[5] = new ReLU(256);
-    layers[6] = new Layer(256, 10, lr);
-    layers[7] = new Softmax(10);
+    layers[0] = new Layer(784, 128, lr);
+    layers[1] = new ReLU(128);
+    layers[2] = new Layer(128, 64, lr);
+    layers[3] = new ReLU(64);
+    layers[4] = new Layer(64, 10, lr);
+    layers[5] = new Softmax(10);
     Model model = Model(layers, numLayers);
     CELoss* celoss = new CELoss(10);
     
-    int numEpochs = 15;
+    int numEpochs = 10;
     int batchSize = 50;
     int numBatches = numImages/batchSize;
     float* input = new float[batchSize*784];
-    float* output = new float[batchSize*10];
     
     auto start = chrono::high_resolution_clock::now();
     for (int i=0; i<numEpochs; i++){
@@ -142,7 +140,7 @@ int main (int argc, char *argv[]){
             float* batchLabels = labels + j*batchSize;
 
             setEqual(batchData, input, batchSize*784);
-            model.forward(input, output, batchSize);
+            float* output = model.forward(input, batchSize);
 
             // calc error
             celoss->forward(output, batchLabels, batchSize);
@@ -158,27 +156,35 @@ int main (int argc, char *argv[]){
     duration = chrono::duration<double, std::milli>(stop - start);
     cout << "training time for " << numEpochs << " epochs: " << duration.count() << " ms" << endl;
 
-    delete[] layers;
-    delete[] data;
-    delete[] labels;
-    delete[] input;
-    delete[] output;
-
     // dummy();
 
     // test model accuracy
-    // int numTestImages = 100;
-    // float* testData = mnist->readData("test", numTestImages);
-    // float* testLabels = mnist->readLabels("test", numTestImages);
+    int numTestImages = 100;
+    float* testData = mnist->readData("test", numTestImages);
+    float* testLabels = mnist->readLabels("test", numTestImages);
 
-    // start = chrono::high_resolution_clock::now();
-    // model.forward(testData, output, numTestImages);
-    // float acc = calcAccuracy(output, testLabels, numTestImages);
-    // stop = chrono::high_resolution_clock::now();
-    // duration = chrono::duration<double, std::milli>(stop - start);
+    start = chrono::high_resolution_clock::now();
+    float* testOutput = model.forward(testData, numTestImages);
+    float acc = calcAccuracy(testOutput, testLabels, numTestImages);
+    stop = chrono::high_resolution_clock::now();
+    duration = chrono::duration<double, std::milli>(stop - start);
 
-    // cout << "test accuracy: " << acc << endl;
-    // cout << "test time: " << duration.count() << " ms" << endl;
+    cout << "test accuracy: " << acc << endl;
+    cout << "test time: " << duration.count() << " ms" << endl;
+
+    for (int i = 0; i < numLayers; i++) {
+        delete layers[i];
+    }
+    delete[] layers;
+    
+    delete mnist;
+    
+    delete[] data;
+    delete[] labels;
+    delete[] input;
+    delete[] testData;
+    delete[] testLabels;
+    delete[] testOutput;
 
     return 0;
 }

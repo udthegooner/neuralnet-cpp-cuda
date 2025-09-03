@@ -6,12 +6,9 @@ class Base{
         float *input, *output;
         int numOut=-1; //number of output nodes
 
-        virtual void forward(float *input, float *output, int numData) = 0;
+        virtual float* forward(float *input, int numData){ return nullptr; };
         virtual void backward(int numData){};
         virtual void update(int numData){};
-        void forward(float *input, float *output){};
-        void backward(){};
-        void update();
 };
 
 #endif
