@@ -5,7 +5,7 @@
 
 class Layer: public Base{
     public:
-        float *weights, *bias, *oldWeights, lr, *newWeights;
+        float *weights, *bias, lr, *newWeights;
         int numIn, weightSize;
 
         Layer(int nIn, int nOut, float _lr);

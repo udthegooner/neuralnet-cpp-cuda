@@ -1,11 +1,6 @@
-#include <string>
+#include "mnist.cuh"
 #include <iostream>
 #include <fstream>
-#include <cassert>
-#include <cstring>
-#include <iomanip>
-
-#include "mnist.h"
 
 using namespace std;
 
@@ -18,6 +13,20 @@ int reverse(int i){
     c3 = (i>>16) & 255;
     c4 = (i>>24) & 255;
     return ((int)c1<<24) + ((int)c2<<16) + ((int) c3<<8) + c4;
+}
+
+void oneHotEncodeLabels(float* labels, thrust::device_vector<float> &labelsVector, int numData, int numClasses){
+    for (int i=0; i<numData; i++){
+        int label = int(labels[i]);
+        for (int j=0; j<numClasses; j++){
+            if (j == label){
+                labelsVector[i*numClasses + j] = 1.0f;
+            }
+            else{
+                labelsVector[i*numClasses + j] = 0.0f;
+            }
+        }
+    }
 }
 
 float* MNIST::readData(string type, int num){
