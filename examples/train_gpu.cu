@@ -64,25 +64,23 @@ int main(int argc, char* argv[]){
     oneHotEncodeLabels(labels, labelsVector, numImages, 10); // one-hot encode labels for vectorized GPU loss computation
 
     // create model
-    float lr = 1e-4;
+    float lr = 1e-3;
     float beta = 0.99f;
 
-    int numLayers = 8;
+    int numLayers = 6;
     std::vector<Base*> layers = std::vector<Base*>(numLayers);
-    layers[0] = new Layer(784, 1024, lr, beta);
-    layers[1] = new ReLU(1024);
-    layers[2] = new Layer(1024, 512, lr, beta);
-    layers[3] = new ReLU(512);
-    layers[4] = new Layer(512, 256, lr, beta);
-    layers[5] = new ReLU(256);
-    layers[6] = new Layer(256, 10, lr, beta);
-    layers[7] = new LogSoftmax(10); // for numerical stability
+    layers[0] = new Layer(784, 128, lr, beta);
+    layers[1] = new ReLU(128);
+    layers[2] = new Layer(128, 64, lr, beta);
+    layers[3] = new ReLU(64);
+    layers[4] = new Layer(64, 10, lr, beta);
+    layers[5] = new LogSoftmax(10); // for numerical stability
 
     Model model = Model(numLayers, layers);
     NLLLoss nllll = NLLLoss(10); // negative log likelihood loss since using log softmax
 
     // train model
-    int numEpochs = 20;
+    int numEpochs = 15;
     int batchSize = 64;
     int numBatches = (numImages + batchSize - 1) / batchSize;
 

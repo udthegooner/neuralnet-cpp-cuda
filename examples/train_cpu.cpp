@@ -111,10 +111,10 @@ int main (int argc, char *argv[]){
     chrono::duration<double, std::milli> duration; //timer
 
     MNIST* mnist = new MNIST();
-    int numImages = 20000;
+    int numImages = 60000;
     float* data = mnist->readData("train", numImages);
     float* labels = mnist->readLabels("train", numImages);
-    float lr = 1e-2;
+    float lr = 1e-3;
 
     int numLayers = 6;
     Base** layers = new Base*[numLayers];
@@ -127,8 +127,8 @@ int main (int argc, char *argv[]){
     Model model = Model(layers, numLayers);
     CELoss* celoss = new CELoss(10);
     
-    int numEpochs = 10;
-    int batchSize = 50;
+    int numEpochs = 15;
+    int batchSize = 64;
     int numBatches = numImages/batchSize;
     float* input = new float[batchSize*784];
     
@@ -159,7 +159,7 @@ int main (int argc, char *argv[]){
     // dummy();
 
     // test model accuracy
-    int numTestImages = 100;
+    int numTestImages = 10000;
     float* testData = mnist->readData("test", numTestImages);
     float* testLabels = mnist->readLabels("test", numTestImages);
 
